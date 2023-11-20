@@ -1,40 +1,313 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Burn Book tutorial
 
-## Getting Started
+Let's create a digital burn book that actually puts privacy first.
 
-First, run the development server:
+🚀 **Your mission**
+
+Build [a Web5 Burn Book](https://burn-book-mean-girls.vercel.app/), based on Mean Girls, but this one is actual private.
+
+🛠️ **Your toolkit**
+
+To build this app, you will wield the following technologies:
+
+- [React](https://react.dev/) - A JavaScript library, your brush to paint user interfaces, craft reusable components, and manage the state of your creation.
+- [Next.js](https://nextjs.org/) - A React metaframework, your compass to guide you through creating pages, managing routes, and managing server-side rendering.
+- [Web5.js](https://developer.tbd.website/api/web5-js/) - A Web5 JavaScript SDK, your key to creating decentralized applications, facilitating direct communication between users, and granting them sovereignty over their data and identity.
+
+## Level 1: Explore the starter code
+
+Good news! You don't have to start from scratch. There is a pre-built application that contains the user interface for our Burn Book. Right now, the functions in the code don’t do much. They just print messages to the console and don’t have any real actions. As you progress through the tutorial, you will add logic to the functions.
+### 📝 Task
+
+To access the starter code, follow the instructions below or explore the project directly in CodeSandbox.
 
 ```bash
+git clone https://github.com/galaxy-bytes/starter-burn-book-mean-girls
+cd starter-burn-book-mean-girls
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[![Play in CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/TBD54566975/developer.tbd.website/tree/main/examples/tutorials/dinger-starter)
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+<details><summary>Finished Dinger App</summary>
+<p>
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+If you’d like to skip ahead and see the finished version of this tutorial, you can check out the running app on CodeSandbox.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+[![Play in CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/TBD54566975/developer.tbd.website/tree/main/examples/tutorials/dinger-completed)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+You can also download and run the example by executing:
 
-## Learn More
+Note: If you don't have `pnpm` installed, you can install it by running `npm install -g pnpm`.
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+git clone https://github.com/TBD54566975/developer.tbd.website.git
+cd developer.tbd.website
+pnpm install
+pnpm start:tutorial-dinger-completed
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+There is also a hosted example deployed at [https://dinger-chat.vercel.app/](https://dinger-chat.vercel.app/)
+</p>
+</details>
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+To fully interact with the web app, please click **"Open in New Tab"** as demonstrated in the GIF below.
 
-## Deploy on Vercel
+![Description of the image](@site/static/img/open-sandbox-in-new-tab.gif)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 🕵️ What to Explore
+- Navigate to the `src/pages/index.js` file.
+- Identify the functions that currently only print console.logs.
+- Try to understand how each function interacts.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Level 2: Connect to Web5 and create a DID
+### 📝 Task
+Locate the line:
+```javascript title="src/pages/index.js"
+console.log(`this log is in initWeb5`);
+```
+and replace it with the following code snippet:
+```javascript title="src/pages/index.js"
+const { web5, did } = await Web5.connect({sync: '5s'});
+setWeb5(web5);
+setMyDid(did);
+```
+
+### 🧩 Breaking it down
+- **Web5.connect()** returns a Web5 instance: It initializes and returns an instance of Web5, allowing you to interact with the Web5 ecosystem.
+- **Web5.connect()** also creates or connects to a DID: A DID ([Decentralized Identifier](https://developer.tbd.website/docs/web5/learn/decentralized-identifiers)) is a user’s unique ID card for the decentralized, digital world. It belongs only to you. `Web5.connect()` will either connect to an existing DID that you have or create a new one for you if you don't have one yet. A DID acts as an authenticator for Web5 apps, removing the need for login credentials.
+
+### 📘 Learn more
+Learn more about [DID authentication](https://developer.tbd.website/blog/did-authentication).
+
+## Level 3: Define our protocol
+### 📝 Task
+Locate the line:
+```javascript
+console.log('this is where we define our protocol')
+```
+
+And replace it with the following code snippet:
+```javascript
+    return {
+      protocol: "https://blackgirlbytes.dev/burn-book-finale",
+      published: true,
+      types: {
+        secretMessage: {
+          schema: "https://example.com/secretMessageSchema",
+          dataFormats: ["application/json"],
+        },
+        directMessage: {
+          schema: "https://example.com/directMessageSchema",
+          dataFormats: ["application/json"],
+        },
+      },
+      structure: {
+        secretMessage: {
+          $actions: [
+            { who: "anyone", can: "write" },
+            { who: "author", of: "secretMessage", can: "read" },
+          ],
+        },
+        directMessage: {
+          $actions: [
+            { who: "author", of: "directMessage", can: "read" },
+            { who: "recipient", of: "directMessage", can: "read" },
+            { who: "anyone", can: "write" },
+          ],
+        },
+      },
+    };
+```
+### 🧩 Breaking it down
+- **protocolDefinition:** This object defines the protocol, its structure, and it grants permissions outlining who can perform specific actions like reading or writing a ding.
+
+### 📘 Learn more
+- Learn more about [protocols](https://developer.tbd.website/docs/web5/learn/protocols/).
+
+## Level 4: Query and install
+Locate this line:
+```js
+    console.log('this is in query local protocol')
+```
+
+Replace:
+```js
+return await web5.dwn.protocols.query({
+      message: {
+        filter: {
+          protocol: "https://blackgirlbytes.dev/burn-book-finale",
+        },
+      },
+    });
+```
+Locate this line
+```js
+console.log('this is where Query remote protocol is')
+```
+Replace:
+```js
+    return await web5.dwn.protocols.query({
+      from: did,
+      message: {
+        filter: {
+          protocol: "https://blackgirlbytes.dev/burn-book-finale",
+        },
+      },
+    });
+```
+
+Locate this line:
+```js
+ console.log('this is where we install local protocol')
+
+```
+
+Replace
+```js
+    return await web5.dwn.protocols.configure({
+      message: {
+        definition: protocolDefinition,
+      },
+    });
+```
+
+Locate this line:
+```js
+  console.log('this is where we install remote protocol')
+```
+cons
+Replace:
+```js
+    const { protocol } = await web5.dwn.protocols.configure({
+      message: {
+        definition: protocolDefinition,
+      },
+    });
+    return await protocol.send(did);
+```
+
+
+## Level 5: Configure our protocol
+
+### 📝 Task
+Locate the line:
+```javascript
+ console.log('this is where we configure our protocol')
+```
+
+And replace it with the following code snippet:
+```javascript
+ const protocolDefinition = defineNewProtocol();
+    const protocolUrl = protocolDefinition.protocol;
+
+    const { protocols: localProtocols, status: localProtocolStatus } = await queryLocalProtocol(web5, protocolUrl);
+    if (localProtocolStatus.code !== 200 || localProtocols.length === 0) {
+      const result = await installLocalProtocol(web5, protocolDefinition);
+      console.log({ result })
+      console.log("Protocol installed locally");
+    }
+
+    const { protocols: remoteProtocols, status: remoteProtocolStatus } = await queryRemoteProtocol(web5, did, protocolUrl);
+    if (remoteProtocolStatus.code !== 200 || remoteProtocols.length === 0) {
+      const result = await installRemoteProtocol(web5, did, protocolDefinition);
+      console.log({ result })
+      console.log("Protocol installed remotely");
+    }
+```
+
+## Level 6: Writing the messages
+Locate the line:
+```js
+console.log('this is where we Write the secret message')
+```
+
+Replace:
+```js
+ try {
+      const secretMessageProtocol = defineNewProtocol();
+      const { record, status } = await web5.dwn.records.write({
+        data: messageObj,
+        message: {
+          protocol: secretMessageProtocol.protocol,
+          protocolPath: "secretMessage",
+          schema: secretMessageProtocol.types.secretMessage.schema,
+          recipient: myDid,
+        },
+      });
+
+      if (status.code === 200) {
+        return { ...messageObj, recordId: record.id };
+      }
+
+      console.log('Secret message written to DWN', { record, status });
+      return record;
+    } catch (error) {
+      console.error('Error writing secret message to DWN', error);
+    }
+```
+Locate the line
+```js
+ console.log('this is where we Write the direct message')
+```
+
+Replace:
+```js
+try {
+      const directMessageProtocol = defineNewProtocol();
+      const { record, status } = await web5.dwn.records.write({
+        data: messageObj,
+        message: {
+          protocol: directMessageProtocol.protocol,
+          protocolPath: "directMessage",
+          schema: directMessageProtocol.types.directMessage.schema,
+          recipient: messageObj.recipientDid,
+        },
+      });
+
+      if (status.code === 200) {
+        return { ...messageObj, recordId: record.id };
+      }
+
+
+      console.log('Direct message written to DWN', { record, status });
+      return record;
+    } catch (error) {
+      console.error('Error writing direct message to DWN', error);
+    }try {
+      const directMessageProtocol = defineNewProtocol();
+      const { record, status } = await web5.dwn.records.write({
+        data: messageObj,
+        message: {
+          protocol: directMessageProtocol.protocol,
+          protocolPath: "directMessage",
+          schema: directMessageProtocol.types.directMessage.schema,
+          recipient: messageObj.recipientDid,
+        },
+      });
+
+      if (status.code === 200) {
+        return { ...messageObj, recordId: record.id };
+      }
+
+
+      console.log('Direct message written to DWN', { record, status });
+      return record;
+    } catch (error) {
+      console.error('Error writing direct message to DWN', error);
+    }
+```
+
+## Level 7: Take a look at the handle Submit and construct Direct Message methods
+
+## Level 8: Take a look at the fetch Messages methods
+
+## Level 9: Take a look at the delete message method
+
+## Level 10: Let's try it out!
+
+
+
+```
+
