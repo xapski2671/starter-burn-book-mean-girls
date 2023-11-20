@@ -28,33 +28,9 @@ npm install
 npm run dev
 ```
 
-[![Play in CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/TBD54566975/developer.tbd.website/tree/main/examples/tutorials/dinger-starter)
+[![Edit galaxy-bytes/starter-burn-book-mean-girls/main](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/p/github/galaxy-bytes/starter-burn-book-mean-girls/main?import=true&embed=1&file=%2FREADME.md)
 
-<details><summary>Finished Dinger App</summary>
-<p>
 
-If you’d like to skip ahead and see the finished version of this tutorial, you can check out the running app on CodeSandbox.
-
-[![Play in CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/TBD54566975/developer.tbd.website/tree/main/examples/tutorials/dinger-completed)
-
-You can also download and run the example by executing:
-
-Note: If you don't have `pnpm` installed, you can install it by running `npm install -g pnpm`.
-
-```bash
-git clone https://github.com/TBD54566975/developer.tbd.website.git
-cd developer.tbd.website
-pnpm install
-pnpm start:tutorial-dinger-completed
-```
-
-There is also a hosted example deployed at [https://dinger-chat.vercel.app/](https://dinger-chat.vercel.app/)
-</p>
-</details>
-
-To fully interact with the web app, please click **"Open in New Tab"** as demonstrated in the GIF below.
-
-![Description of the image](@site/static/img/open-sandbox-in-new-tab.gif)
 
 ### 🕵️ What to Explore
 - Navigate to the `src/pages/index.js` file.
